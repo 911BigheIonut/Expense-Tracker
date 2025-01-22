@@ -1,0 +1,21 @@
+<div class="flex items-center justify-between p-3 border rounded-md bg-gray-100">
+  <div>
+    <p class="font-semibold">{{ expense.category }}</p>
+    <p class="text-sm text-gray-500">$ {{ expense.amount }}</p>
+  </div>
+  <div class="space-x-2">
+    <button
+      class="px-2 py-1 text-sm text-white bg-white border border-gray-400 text-gray-900 rounded"
+      (click)="onEdit()"
+    >
+      Edit
+    </button>
+    <button
+      class="px-2 py-1 text-sm text-white bg-red-500 rounded"
+      (click)="onDelete()"
+    >
+      Delete
+    </button>
+  </div>
+</div>
+  

@@ -1,0 +1,91 @@
+<div>
+  <h1 class="text-center text-2xl font-bold my-10">Weekly Expenses Tracker</h1>
+  <div class="flex flex-wrap justify-center">
+    <button
+      *ngFor="let day of daysOfWeek"
+      class="px-4 py-2 font-semibold transition-colors duration-300 border border-gray-600"
+      [ngClass]="{
+        'bg-gray-600 text-white': day === selectedDay && !showingSummary,
+        'bg-white text-gray-700': day !== selectedDay || showingSummary
+      }"
+      (click)="getExpensesForDay(day)"
+    >
+      {{ day }}
+    </button>
+  
+    <button
+      class="px-4 py-2 font-semibold transition-colors border border-gray-900 bg-gray-900 text-white "
+      (click)="showSummary()"
+    >
+      Summary
+    </button>
+  </div>
+
+  <div *ngIf="!showingSummary" class="bg-white p-4 shadow-md border border-gray-200">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold">Expenses for {{ selectedDay }}</h3>
+      <button
+        class="px-4 py-2 text-sm text-white bg-gray-600 hover:bg-gray-700"
+        (click)="addExpense()"
+      >
+        Add Expense
+      </button>
+    </div>
+    <ul class="space-y-2">
+      <li *ngFor="let expense of expenses">
+        <app-expense
+          [expense]="expense"
+          (edit)="handleEditExpense($event)"
+          (delete)="handleDeleteExpense($event)"
+        ></app-expense>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="showingSummary" class="bg-white p-4 shadow-md border border-gray-200">
+    <h3 class="text-lg font-bold mb-4">Your weekly expense summary</h3>
+    <table class="table-auto w-full border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 px-4 py-2 text-left">Day</th>
+          <th class="border border-gray-300 px-4 py-2 text-left">Category</th>
+          <th class="border border-gray-300 px-4 py-2 text-right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let daySummary of groupedWeeklySummary">
+          <tr>
+            <td
+              class="border border-gray-300 px-4 py-2 font-bold align-top bg-gray-100"
+              [attr.rowspan]="daySummary.expenses.length"
+            >
+              {{ daySummary.day }}
+            </td>
+            <td class="border border-gray-300 px-4 py-2">
+              {{ daySummary.expenses[0].category }}
+            </td>
+            <td class="border border-gray-300 px-4 py-2 text-right">
+              $ {{ daySummary.expenses[0].total }}
+            </td>
+          </tr>
+          <tr *ngFor="let expense of daySummary.expenses.slice(1)">
+            <td class="border border-gray-300 px-4 py-2">
+              {{ expense.category }}
+            </td>
+            <td class="border border-gray-300 px-4 py-2 text-right">
+              $ {{ expense.total }}
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+      <tfoot>
+        <tr class="bg-gray-200 font-bold">
+          <td class="border border-gray-300 px-4 py-2 text-right" colspan="2">Weekly Total</td>
+          <td class="border border-gray-300 px-4 py-2 text-right">
+            $ {{ calculateWeeklyTotal() }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
